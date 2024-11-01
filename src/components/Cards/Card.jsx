@@ -5,25 +5,26 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+const BASE_URL = process.env.REACT_APP_SERVER_URL;
 
-export default function CardCourse() {
+export default function CardCourse({ title, description, image, cardId, handleCard }) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ width: 345, minHeight: 350 }}>
       <CardMedia
         sx={{ height: 140 }}
-        image="https://t.ctcdn.com.br/AD7TBmA94FXeu_izgtM6k7X9qOw=/1024x576/smart/i743626.jpeg"
+        image={`${BASE_URL}/api/archive/image?filename=${image}`}
         title="green iguana"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          IA
+          {title}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          A inteligência artificial (IA) representa a capacidade de uma máquina em reproduzir habilidades semelhantes às humanas, englobando aspectos como raciocínio, aprendizagem, planejamento e criatividade. Neste curso você irá aprender sobre a história da inteligência artificial
+          {description}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button size="small" onClick={() => handleCard(cardId)}>Ver mais</Button>
       </CardActions>
     </Card>
   );

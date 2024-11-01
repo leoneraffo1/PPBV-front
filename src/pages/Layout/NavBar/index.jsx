@@ -6,7 +6,14 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
 import Logo from '../../../assets/logo.jpg';
+import { useAuth } from '../../../hooks/useAuth';
 const NavBar = () => {
+    const { logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+    }
+
     return (
         <AppBar position="static">
             <Toolbar style={{ background: "#f1641f" }}>
@@ -15,9 +22,12 @@ const NavBar = () => {
                 </Box>
 
                 <Box display="flex" justifyContent="center" flexGrow={1}>
-                    <Button color="inherit" component={Link} to="/">Home</Button>
-                    <Button color="inherit" component={Link} to="/usuarios">Usuários</Button>
-                    <Button color="inherit" component={Link} to="/reportar-erros">Reportar Erros</Button>
+                    <Button color="inherit" component={Link} to="/home">Home</Button>
+                    <Button color="inherit" component={Link} to="/users">Usuários</Button>
+                    <Button color="inherit" component={Link} to="/report-erros">Reportar Erros</Button>
+                </Box>
+                <Box display="flex" justifyContent="end" flexGrow={1}>
+                    <Button color="inherit" component={Link} onClick={() => handleLogout()}>Sair</Button>
                 </Box>
             </Toolbar>
         </AppBar>
