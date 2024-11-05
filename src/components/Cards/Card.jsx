@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 const BASE_URL = process.env.REACT_APP_SERVER_URL;
 
-export default function CardCourse({ title, description, image, cardId, handleCard }) {
+export default function CardCourse({ title, description, image, cardId, handleCard, deleteCard, type }) {
   return (
     <Card sx={{ width: 345, minHeight: 350 }}>
       <CardMedia
@@ -25,7 +25,8 @@ export default function CardCourse({ title, description, image, cardId, handleCa
       </CardContent>
       <CardActions>
         <Button size="small" onClick={() => handleCard(cardId)}>Ver mais</Button>
+        {type === "Coordenador" && < Button size="small" onClick={() => deleteCard(cardId)} color="error">Excluir Card</Button>}
       </CardActions>
-    </Card>
+    </Card >
   );
 }

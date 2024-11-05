@@ -13,13 +13,9 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -57,6 +53,12 @@ const headCells = [
         numeric: false,
         disablePadding: false,
         label: 'Email',
+    },
+    {
+        id: 'percentage',
+        numeric: false,
+        disablePadding: false,
+        label: 'Progresso'
     },
     {
         id: 'type_user_fk',
@@ -164,7 +166,7 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-export default function MaterialTable({ rows, handleAdd, type }) {
+export default function MaterialTable({ rows, handleAdd, type, handleDelete }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
@@ -269,7 +271,7 @@ export default function MaterialTable({ rows, handleAdd, type }) {
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(event) => handleClick(event, row.id)}
+                                        // onClick={(event) => handleClick(event, row.id)}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
@@ -278,7 +280,11 @@ export default function MaterialTable({ rows, handleAdd, type }) {
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell padding="checkbox">
-
+                                            {type == "Coordenador" && <Tooltip title="Deletar usuário">
+                                                <IconButton onClick={() => handleDelete(row.id)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>}
                                         </TableCell>
                                         <TableCell
                                             component="th"
@@ -297,6 +303,11 @@ export default function MaterialTable({ rows, handleAdd, type }) {
                                             id={labelId}
                                             scope="row"
                                         >{row.email}</TableCell>
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                        >{type == "Coordenador" && row.view_percentage} %</TableCell>
                                         <TableCell
                                             component="th"
                                             id={labelId}

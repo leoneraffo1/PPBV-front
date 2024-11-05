@@ -17,7 +17,7 @@ export default function Home() {
     const [courseSelected, setCourseSelected] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const { user } = useAuth();
-    
+
     useEffect(() => {
         getCourses()
     }, []);
@@ -63,6 +63,16 @@ export default function Home() {
     const handleCardView = async (id) => {
         await setCardSelected(id)
         setViewCard(true)
+        if (user.type_user.name != "Coordenador") {
+            api.post(`card/${id}/view`)
+        }
+    }
+
+    const deleteCard = async (id) => {
+        setLoading(true)
+        api.delete(`card/${id}`).then(resp => {
+            getCards(courseSelected);
+        })
     }
 
     const onDragEnd = (result) => {
@@ -83,14 +93,14 @@ export default function Home() {
             api.put(`/card/${card.id}/order`, {
                 order: index
             }).then(resp => {
-                if (index + 1 == cards.length) {
+                if (index + 1 === cards.length) {
                     setIsEditing(!isEditing)
                 }
             })
         });
     }
     return (
-        <Box sx={{ padding: 2 }} >
+        <Box sx={{ padding: 2, marginBottom: 10 }} >
             {controlCard && <DialogControllCard open={controlCard} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setControllCard(false)} />}
             {viewCard && <DialogViewCard open={viewCard} cardId={cardSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} />}
             <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
@@ -150,6 +160,8 @@ export default function Home() {
                                                     description={card.description}
                                                     image={card.image}
                                                     handleCard={() => handleCardView(card.id)}
+                                                    deleteCard={() => deleteCard(card.id)}
+                                                    type={user.type_user.name}
                                                 />
                                             </div>
                                         )}
@@ -188,6 +200,7 @@ const getListStyle = isDraggingOver => ({
     display: 'flex',
     padding: grid,
     overflow: 'auto',
+    flexWrap: 'wrap'
 });
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);

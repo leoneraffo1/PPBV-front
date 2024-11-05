@@ -29,8 +29,12 @@ export default function Users() {
         })
     }
     const getUsers = (course) => {
-        api.get(`/course/${course}/user`).then(resp => {
-            setUser(resp.data.users)
+        api.get(`user`, {
+            params: {
+                course
+            }
+        }).then(resp => {
+            setUser(resp.data)
         })
     }
     const handleCourse = (event) => {
@@ -39,6 +43,11 @@ export default function Users() {
     };
     const handleAdd = () => {
         setNewUser(true)
+    }
+    const handleDelete = (id) => {
+        api.delete(`user/${id}`).then(resp => {
+            getUsers(courseSelected)
+        })
     }
     const handleCloseCardSave = () => {
         getUsers(courseSelected)
@@ -66,7 +75,7 @@ export default function Users() {
                     })}
                 </Select>
             </FormControl>
-            <MaterialTable rows={users} handleAdd={handleAdd} type={user.type_user.name} />
+            <MaterialTable rows={users} handleAdd={handleAdd} type={user.type_user.name} handleDelete={handleDelete} />
         </div>
     );
 }
