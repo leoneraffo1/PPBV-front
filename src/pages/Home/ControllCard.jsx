@@ -15,6 +15,9 @@ export default function DialogControllCard({ open, handleClose, course, handleCl
     const handleSave = (event) => {
         event.preventDefault();
         setLoading(true)
+        if(image == null){
+            alert("Insira uma imagem");
+        }
         const formData = new FormData(event.currentTarget);
         const formJson = Object.fromEntries((formData).entries());
         const title = formJson.title;
