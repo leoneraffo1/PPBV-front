@@ -107,6 +107,7 @@ export default function DialogControllCard({ open, handleClose, course, handleCl
                     Imagem
                     <VisuallyHiddenInput
                         type="file"
+                        required
                         onChange={(event) => setImage(event.target.files[0])}
                     />
                 </Button>
