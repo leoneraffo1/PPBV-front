@@ -166,7 +166,7 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-export default function MaterialTable({ rows, handleAdd, type, handleDelete }) {
+export default function MaterialTable({ rows, handleAdd, type, handleDelete, course }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
@@ -243,7 +243,7 @@ export default function MaterialTable({ rows, handleAdd, type, handleDelete }) {
                         justifyContent: "end",
                     }}>
                         <Tooltip title="Adicionar usuário">
-                            <IconButton onClick={handleAdd}>
+                            <IconButton onClick={handleAdd} disabled={!course}>
                                 <AddIcon />
                             </IconButton>
                         </Tooltip>

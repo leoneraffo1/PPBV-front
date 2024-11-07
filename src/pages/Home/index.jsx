@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../components/Cards/Card";
-import { Box, Grid2, InputLabel, Select, FormControl, MenuItem, Button, CircularProgress } from "@mui/material";
+import { Box, Grid2, InputLabel, Select, FormControl, MenuItem, Button, CircularProgress, TextField } from "@mui/material";
 import api from "../../service/api";
 import AddIcon from '@mui/icons-material/Add';
 import DialogControllCard from "./ControllCard";
@@ -8,6 +8,7 @@ import DialogViewCard from "./ViewCard";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useAuth } from "../../hooks/useAuth";
 export default function Home() {
+    const [searchText, setSearchText] = useState('');
     const [loading, setLoading] = useState(false);
     const [controlCard, setControllCard] = useState(false);
     const [viewCard, setViewCard] = useState(false);
@@ -99,6 +100,14 @@ export default function Home() {
             })
         });
     }
+
+    const handleSearchChange = (event) => {
+        setSearchText(event.target.value);
+    };
+
+    const filteredCards = cards.filter((card) =>
+        card.title.toLowerCase().includes(searchText.toLowerCase())
+    );
     return (
         <Box sx={{ padding: 2, marginBottom: 10 }} >
             {controlCard && <DialogControllCard open={controlCard} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setControllCard(false)} />}
@@ -124,6 +133,14 @@ export default function Home() {
                     Adicionar Card
                 </Button>
             </Box>}
+            <TextField
+                label="Pesquisar"
+                variant="outlined"
+                value={searchText}
+                onChange={handleSearchChange}
+                fullWidth
+                disabled={!(cards.length > 0)}
+            />
             <Grid2 container spacing={4}>
                 <Box style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
                     {loading && <CircularProgress />}
@@ -141,7 +158,7 @@ export default function Home() {
                                 style={getListStyle(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
-                                {cards.map((card, index) => (
+                                {filteredCards.map((card, index) => (
                                     <Draggable key={card.id} draggableId={String(card.id)} index={index}>
                                         {(provided, snapshot) => (
                                             <div

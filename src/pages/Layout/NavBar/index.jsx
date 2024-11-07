@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import Logo from '../../../assets/logo.jpg';
 import { useAuth } from '../../../hooks/useAuth';
 const NavBar = () => {
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     const handleLogout = () => {
         logout();
@@ -23,7 +23,7 @@ const NavBar = () => {
 
                 <Box display="flex" justifyContent="center" flexGrow={1}>
                     <Button color="inherit" component={Link} to="/home">Home</Button>
-                    <Button color="inherit" component={Link} to="/users">Usuários</Button>
+                    {user.type_user.name === "Coordenador" && <Button color="inherit" component={Link} to="/users">Usuários</Button>}
                     <Button color="inherit" component={Link} to="/report-erros">Reportar Erros</Button>
                 </Box>
                 <Box display="flex" justifyContent="end" flexGrow={1}>

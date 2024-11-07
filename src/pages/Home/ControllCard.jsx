@@ -10,9 +10,11 @@ import { styled } from '@mui/material/styles';
 import api from '../../service/api';
 export default function DialogControllCard({ open, handleClose, course, handleCloseSave }) {
     const [image, setImage] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [files, setFile] = useState([]);
     const handleSave = (event) => {
         event.preventDefault();
+        setLoading(true)
         const formData = new FormData(event.currentTarget);
         const formJson = Object.fromEntries((formData).entries());
         const title = formJson.title;
@@ -31,6 +33,10 @@ export default function DialogControllCard({ open, handleClose, course, handleCl
                     image: imagemName,
                     course_fk: course,
                 }).then((respCard) => {
+                    if (files.length == 0) {
+                        handleCloseSave()
+                        setLoading(false)
+                    }
                     files.forEach((file, index) => {
                         const formDataArchive = new FormData();
                         formDataArchive.append("file", file);
@@ -40,6 +46,7 @@ export default function DialogControllCard({ open, handleClose, course, handleCl
                         }).then((respFile) => {
                             if (index + 1 === files.length) {
                                 handleCloseSave()
+                                setLoading(false)
                             }
                         });
                     });
@@ -136,7 +143,7 @@ export default function DialogControllCard({ open, handleClose, course, handleCl
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>
-                <Button type="submit">Salvar</Button>
+                <Button type="submit" disabled={loading}>Salvar</Button>
             </DialogActions>
         </Dialog >
     );

@@ -75,7 +75,7 @@ export default function Users() {
                     })}
                 </Select>
             </FormControl>
-            <MaterialTable rows={users} handleAdd={handleAdd} type={user.type_user.name} handleDelete={handleDelete} />
+            <MaterialTable rows={users} handleAdd={handleAdd} type={user.type_user.name} handleDelete={handleDelete} course={courseSelected} />
         </div>
     );
 }
