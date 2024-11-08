@@ -7,12 +7,17 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
- 
+import api from '../../service/api';
+
 export default function Reports() {
     const navigate = useNavigate();
+    const [message, setMessage] = useState("");
 
     const handleSave = (event) => {
         event.preventDefault();
+        api.post("report", {
+            message
+        })
         navigate("/home", { replace: true });
 
     }
@@ -47,6 +52,8 @@ export default function Reports() {
                     fullWidth
                     multiline
                     rows={4}
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
                 />
 
             </DialogContent>
