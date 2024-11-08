@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
-import Logo from '../../../assets/logo.jpg';
+import Logo from '../../../assets/UNIFIL_GRADUACAO.png';
 import { useAuth } from '../../../hooks/useAuth';
 const NavBar = () => {
     const { logout, user } = useAuth();
@@ -18,7 +18,7 @@ const NavBar = () => {
         <AppBar position="static">
             <Toolbar style={{ background: "#f1641f" }}>
                 <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
-                    <img src={"https://unifil.br/assets/uploads/2022/11/logo-unifil.svg"} alt="Logo" />
+                    <img src={Logo} alt="Logo" />
                 </Box>
 
                 <Box display="flex" justifyContent="center" flexGrow={1}>
