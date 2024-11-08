@@ -5,12 +5,14 @@ import { Box, Grid2, InputLabel, Select, FormControl, MenuItem, Button, Circular
 import api from "../../service/api";
 import { useAuth } from "../../hooks/useAuth";
 import DialogUser from "./NewUsers";
-
+import DialogUserEdit from "./EditUsers";
 export default function Users() {
     const [users, setUser] = useState([]);
     const [courses, setCourse] = useState([]);
     const [newUser, setNewUser] = useState(false);
+    const [editUser, setEditUser] = useState(false);
     const [courseSelected, setCourseSelected] = useState("");
+    const [userSelected, setUserSelected] = useState(null);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -52,12 +54,18 @@ export default function Users() {
     const handleCloseCardSave = () => {
         getUsers(courseSelected)
         setNewUser(false)
+        setEditUser(false)
+    }
+    const handleEdit = (id) => {
+        setUserSelected(id);
+        setEditUser(true);
     }
     return (
         <div style={{
             padding: 20
         }}>
             {newUser && <DialogUser open={newUser} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setNewUser(false)} />}
+            {editUser && <DialogUserEdit open={editUser} userId={userSelected} courseId={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => { setEditUser(false); setUserSelected(null) }} />}
 
             <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
                 <InputLabel id="demo-simple-select-label">Curso</InputLabel>
@@ -75,7 +83,9 @@ export default function Users() {
                     })}
                 </Select>
             </FormControl>
-            <MaterialTable rows={users} handleAdd={handleAdd} type={user.type_user.name} handleDelete={handleDelete} course={courseSelected} />
+            <MaterialTable rows={users}
+                handleAdd={handleAdd}
+                type={user.type_user.name} handleDelete={handleDelete} handleEdit={handleEdit} course={courseSelected} />
         </div>
     );
 }

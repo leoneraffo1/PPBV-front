@@ -16,6 +16,7 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -166,7 +167,7 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-export default function MaterialTable({ rows, handleAdd, type, handleDelete, course }) {
+export default function MaterialTable({ rows, handleAdd, type, handleDelete, handleEdit, course }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
@@ -279,10 +280,15 @@ export default function MaterialTable({ rows, handleAdd, type, handleDelete, cou
                                         selected={isItemSelected}
                                         sx={{ cursor: 'pointer' }}
                                     >
-                                        <TableCell padding="checkbox">
+                                        <TableCell padding="normal" sx={{ display: "flex" }}>
                                             {type == "Coordenador" && <Tooltip title="Deletar usuário">
                                                 <IconButton onClick={() => handleDelete(row.id)}>
                                                     <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>}
+                                            {type == "Coordenador" && <Tooltip title="Deletar usuário">
+                                                <IconButton onClick={() => handleEdit(row.id)}>
+                                                    <EditIcon />
                                                 </IconButton>
                                             </Tooltip>}
                                         </TableCell>

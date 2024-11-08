@@ -16,16 +16,20 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
 
-        const response = await api.post("login", {
+        await api.post("login", {
             email: email,
             password: password,
+        }).then(response => {
+            if (response.data) {
+                setLoading(false);
+                login(response.data.user);
+                localStorage.setItem("token_ppv", response.data.token)
+            }
+        }).catch(error => {
+            alert("Insira um usuário valido");
         })
 
-        if (response.data) {
-            setLoading(false);
-            login(response.data.user);
-            localStorage.setItem("token_ppv", response.data.token)
-        }
+
     };
 
     return (
