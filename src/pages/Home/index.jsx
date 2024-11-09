@@ -109,7 +109,7 @@ export default function Home() {
         card.title.toLowerCase().includes(searchText.toLowerCase())
     );
     return (
-        <Box sx={{ padding: 2, marginBottom: 10 }} >
+        <Box sx={{ padding: 2, marginBottom: 10, marginTop: 10 }} >
     {controlCard && <DialogControllCard open={controlCard} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setControllCard(false)} />}
     {viewCard && <DialogViewCard open={viewCard} cardId={cardSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} />}
     

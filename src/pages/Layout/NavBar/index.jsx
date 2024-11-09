@@ -15,7 +15,7 @@ const NavBar = () => {
     }
 
     return (
-        <AppBar position="static">
+        <AppBar position="fixed">
             <Toolbar style={{ background: "#f1641f" }}>
                 <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
                     <img src={Logo} alt="Logo" />
