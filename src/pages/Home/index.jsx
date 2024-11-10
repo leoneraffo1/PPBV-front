@@ -5,13 +5,17 @@ import api from "../../service/api";
 import AddIcon from '@mui/icons-material/Add';
 import DialogControllCard from "./ControllCard";
 import DialogViewCard from "./ViewCard";
+import DialogEditCard from "./EditCard";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useAuth } from "../../hooks/useAuth";
+
+
 export default function Home() {
     const [searchText, setSearchText] = useState('');
     const [loading, setLoading] = useState(false);
     const [controlCard, setControllCard] = useState(false);
     const [viewCard, setViewCard] = useState(false);
+    const [editCard, setEditCard] = useState(false);
     const [cards, setCards] = useState([]);
     const [cardSelected, setCardSelected] = useState(null);
     const [courses, setCourse] = useState([]);
@@ -59,6 +63,7 @@ export default function Home() {
 
     const handleCloseCardSave = () => {
         setControllCard(false)
+        setEditCard(false);
         getCards(courseSelected);
     }
     const handleCardView = async (id) => {
@@ -97,6 +102,8 @@ export default function Home() {
                 if (index + 1 === cards.length) {
                     setIsEditing(!isEditing)
                 }
+            }).catch(error => {
+                setIsEditing(!isEditing)
             })
         });
     }
@@ -108,93 +115,101 @@ export default function Home() {
     const filteredCards = cards.filter((card) =>
         card.title.toLowerCase().includes(searchText.toLowerCase())
     );
+
+    const handleEdit = (card) => {
+        setCardSelected(card)
+        setEditCard(true)
+    };
+
     return (
         <Box sx={{ padding: 2, marginBottom: 10 }} >
-    {controlCard && <DialogControllCard open={controlCard} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setControllCard(false)} />}
-    {viewCard && <DialogViewCard open={viewCard} cardId={cardSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} />}
-    
-    <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
-        <InputLabel id="demo-simple-select-label">Curso</InputLabel>
-        <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Curso"
-            value={courseSelected}
-            onChange={handleCourse}
-        >
-            {courses.map(course => {
-                return <MenuItem value={course.id} key={course.id}>
-                    {course.name}
-                </MenuItem>
-            })}
-        </Select>
-    </FormControl>
-    
-    <TextField
-        label="Pesquisar"
-        variant="outlined"
-        value={searchText}
-        onChange={handleSearchChange}
-        fullWidth
-        disabled={!(cards.length > 0)}
-        style={{ marginBottom: 20 }}
-    />
-    
-    {user.type_user.name === "Coordenador" && (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <Button variant="contained" disabled={!courseSelected} onClick={handleAddCard} endIcon={<AddIcon />}>
-                Adicionar Card
-            </Button>
-            <Button variant="contained" disabled={!courseSelected} onClick={() => { isEditing ? saveOrderCards() : setIsEditing(!isEditing) }}>
-                {isEditing ? "Salvar Ordem" : "Editar Ordem"}
-            </Button>
-        </Box>
-    )}
-    
-    <Grid2 container spacing={4}>
-        <Box style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
-            {loading && <CircularProgress />}
-        </Box>
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable" direction="horizontal">
-                {(provided, snapshot) => (
-                    <div
-                        ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}
-                        {...provided.droppableProps}
-                    >
-                        {filteredCards.map((card, index) => (
-                            <Draggable key={card.id} draggableId={String(card.id)} index={index}>
-                                {(provided, snapshot) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...(isEditing ? provided.dragHandleProps : {})}
-                                        style={getItemStyle(
-                                            snapshot.isDragging,
-                                            provided.draggableProps.style
+            {controlCard && <DialogControllCard open={controlCard} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setControllCard(false)} />}
+            {viewCard && <DialogViewCard open={viewCard} cardId={cardSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} />}
+            {editCard && <DialogEditCard open={editCard} cardId={cardSelected} course={courseSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} handleCloseSave={() => handleCloseCardSave()} />}
+
+            <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
+                <InputLabel id="demo-simple-select-label">Curso</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Curso"
+                    value={courseSelected}
+                    onChange={handleCourse}
+                >
+                    {courses.map(course => {
+                        return <MenuItem value={course.id} key={course.id}>
+                            {course.name}
+                        </MenuItem>
+                    })}
+                </Select>
+            </FormControl>
+
+            <TextField
+                label="Pesquisar"
+                variant="outlined"
+                value={searchText}
+                onChange={handleSearchChange}
+                fullWidth
+                disabled={!(cards.length > 0)}
+                style={{ marginBottom: 20 }}
+            />
+
+            {user.type_user.name === "Coordenador" && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                    <Button variant="contained" disabled={!courseSelected} onClick={handleAddCard} endIcon={<AddIcon />}>
+                        Adicionar Card
+                    </Button>
+                    <Button variant="contained" disabled={!courseSelected} onClick={() => { isEditing ? saveOrderCards() : setIsEditing(!isEditing) }}>
+                        {isEditing ? "Salvar Ordem" : "Editar Ordem"}
+                    </Button>
+                </Box>
+            )}
+
+            <Grid2 container spacing={4}>
+                <Box style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
+                    {loading && <CircularProgress />}
+                </Box>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="droppable" direction="horizontal">
+                        {(provided, snapshot) => (
+                            <div
+                                ref={provided.innerRef}
+                                style={getListStyle(snapshot.isDraggingOver)}
+                                {...provided.droppableProps}
+                            >
+                                {filteredCards.map((card, index) => (
+                                    <Draggable key={card.id} draggableId={String(card.id)} index={index}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...(isEditing ? provided.dragHandleProps : {})}
+                                                style={getItemStyle(
+                                                    snapshot.isDragging,
+                                                    provided.draggableProps.style
+                                                )}
+                                            >
+                                                <Card
+                                                    cardId={card.id}
+                                                    title={card.title}
+                                                    description={card.description}
+                                                    image={card.image}
+                                                    handleCard={() => handleCardView(card.id)}
+                                                    deleteCard={() => deleteCard(card.id)}
+                                                    handleEdit={() => handleEdit(card.id)}
+                                                    type={user.type_user.name}
+                                                />
+                                            </div>
                                         )}
-                                    >
-                                        <Card
-                                            cardId={card.id}
-                                            title={card.title}
-                                            description={card.description}
-                                            image={card.image}
-                                            handleCard={() => handleCardView(card.id)}
-                                            deleteCard={() => deleteCard(card.id)}
-                                            type={user.type_user.name}
-                                        />
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>
-    </Grid2>
-</Box>
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            </Grid2>
+        </Box>
 
 
     );
