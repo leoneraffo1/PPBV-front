@@ -125,7 +125,7 @@ export default function Home() {
         <Box sx={{ padding: 2, marginBottom: 10 }} >
             {controlCard && <DialogControllCard open={controlCard} course={courseSelected} handleCloseSave={() => handleCloseCardSave()} handleClose={() => setControllCard(false)} />}
             {viewCard && <DialogViewCard open={viewCard} cardId={cardSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} />}
-            {editCard && <DialogEditCard open={editCard} cardId={cardSelected} course={courseSelected} handleClose={() => { setViewCard(false); setCardSelected(null) }} handleCloseSave={() => handleCloseCardSave()} />}
+            {editCard && <DialogEditCard open={editCard} cardId={cardSelected} course={courseSelected} handleClose={() => { setEditCard(false); setCardSelected(null) }} handleCloseSave={() => handleCloseCardSave()} />}
 
             <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
                 <InputLabel id="demo-simple-select-label">Curso</InputLabel>
@@ -134,7 +134,23 @@ export default function Home() {
                     id="demo-simple-select"
                     label="Curso"
                     value={courseSelected}
-                    onChange={handleCourse}
+                    onChange={handleCourse} 
+                >
+                    {courses.map(course => {
+                        return <MenuItem value={course.id} key={course.id}>
+                            {course.name}
+                        </MenuItem>
+                    })}
+                </Select>
+            </FormControl>
+            <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
+                <InputLabel id="demo-simple-select-label">Curso</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Curso"
+                    value={courseSelected}
+                    onChange={handleCourse} 
                 >
                     {courses.map(course => {
                         return <MenuItem value={course.id} key={course.id}>

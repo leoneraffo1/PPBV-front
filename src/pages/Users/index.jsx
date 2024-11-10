@@ -83,6 +83,22 @@ export default function Users() {
                     })}
                 </Select>
             </FormControl>
+            <FormControl fullWidth style={{ margin: "20px 0px 20px 0px" }} >
+                <InputLabel id="demo-simple-select-label">Curso</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Curso"
+                    value={courseSelected}
+                    onChange={handleCourse}
+                >
+                    {courses.map(course => {
+                        return <MenuItem value={course.id} key={course.id}>
+                            {course.name}
+                        </MenuItem>
+                    })}
+                </Select>
+            </FormControl>
             <MaterialTable rows={users}
                 handleAdd={handleAdd}
                 type={user.type_user.name} handleDelete={handleDelete} handleEdit={handleEdit} course={courseSelected} />
