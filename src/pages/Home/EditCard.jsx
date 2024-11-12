@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import {
     Button, TextField, Dialog,
     DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Box, Typography
+    Box, Typography, IconButton
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import api from '../../service/api';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function DialogEditCard({ open, handleClose, course, cardId, handleCloseSave }) {
     const [title, setTitle] = useState('');
@@ -20,10 +21,11 @@ export default function DialogEditCard({ open, handleClose, course, cardId, hand
         if (cardId) {
             // Carrega os dados do card para edição ao abrir o modal
             api.get(`/card/${cardId}`).then((response) => {
-                const { title, description, image } = response.data;
+                const { title, description, image, archive } = response.data;
                 setTitle(title);
                 setDescription(description);
                 setImage(image);
+                setFiles(archive)
             });
         }
     }, [cardId]);
@@ -62,12 +64,12 @@ export default function DialogEditCard({ open, handleClose, course, cardId, hand
                 ...formData,
                 image: imagemName
             }).then((respCard) => {
-                if (files.length === 0) {  
+                if (files.length === 0) {
                     handleCloseSave();
                     setLoading(false);
                 } else {
                     // Substitui os arquivos em anexo
-                    const uploadFiles = files.map((file) => {
+                    const uploadFiles = files.filter(file => file.id == null).map((file) => {
                         const formDataArchive = new FormData();
                         formDataArchive.append("file", file);
                         formDataArchive.append("card", cardId);
@@ -85,6 +87,22 @@ export default function DialogEditCard({ open, handleClose, course, cardId, hand
             alert("Erro ao atualizar o card.");
             setLoading(false);
         });
+    };
+
+    const handleDelete = async (archive, index) => {
+        try {
+            if (archive) {
+                await api.delete(`archive/${archive}`);
+            }
+
+            // Cria uma cópia do array antes de modificar
+            const updatedFiles = [...files];
+            updatedFiles.splice(index, 1);
+            console.log(updatedFiles)
+            setFiles(updatedFiles);
+        } catch (error) {
+            console.error("Erro ao deletar o arquivo:", error);
+        }
     };
 
     return (
@@ -166,9 +184,14 @@ export default function DialogEditCard({ open, handleClose, course, cardId, hand
                     <Box>
                         <Typography variant="body1">Arquivos Selecionados:</Typography>
                         {files.map((file, index) => (
-                            <Typography key={index} variant="body2">
-                                {file.name}
-                            </Typography>
+                            <Box key={index} sx={{ display: "flex", justifyContent: "space-between" }}>
+                                <Typography key={index} variant="body2">
+                                    {file.id == null ? file.name : file.path}
+                                </Typography>
+                                <IconButton key={`delete-${index}`} aria-label="delete" onClick={() => handleDelete(file.id, index)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
                         ))}
                     </Box>
                 )}
