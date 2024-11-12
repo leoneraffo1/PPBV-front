@@ -62,7 +62,7 @@ export default function DialogEditCard({ open, handleClose, course, cardId, hand
                 ...formData,
                 image: imagemName
             }).then((respCard) => {
-                if (files.length === 0) {
+                if (files.length === 0) {  
                     handleCloseSave();
                     setLoading(false);
                 } else {
@@ -70,7 +70,7 @@ export default function DialogEditCard({ open, handleClose, course, cardId, hand
                     const uploadFiles = files.map((file) => {
                         const formDataArchive = new FormData();
                         formDataArchive.append("file", file);
-                        formDataArchive.append("card", respCard.data.id);
+                        formDataArchive.append("card", cardId);
                         return api.post("archive", formDataArchive, {
                             headers: { "Content-Type": "multipart/form-data" }
                         });
